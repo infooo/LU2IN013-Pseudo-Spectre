@@ -2,13 +2,26 @@ import tkinter as tk
 import ttkbootstrap as ttk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-import first_approach 
+import First_approach 
 
-def firstFunc():
-    ax.clear()
+def getMat():
+    global n
     n = dimension_val.get()
+    global A 
+    A = First_approach.creerMat(n)
+
+def getEps():
+    global epsilon
     epsilon = float(imprecision_val.get())
-    first_approach.affichage(n, epsilon)
+
+def getNbPoints():
+    global nbPoints
+    nbPoints = nbPoints_val.get()
+
+def Affichage():
+    ax.clear()
+
+    First_approach.affichage(n, A, epsilon, nbPoints)
 
     canvas.draw()
 
@@ -37,29 +50,45 @@ notebook = ttk.Notebook(window)
 # arguments - premiere approche (fenetre 1)
 tab1 = ttk.Frame(notebook)
 
-label1 = ttk.Label(tab1, text = 'Entrez la dimension souhaitee:')
-label1.pack()
+label1 = ttk.Label(tab1, text = 'Entrez la taille de la matrice souhaitee:')
+label1.grid(row = 0, column = 0, sticky = tk.W)
 
 dimension_val = tk.IntVar() 
 dimension = ttk.Entry(tab1, textvariable = dimension_val)
-dimension.pack()
+dimension.grid(row = 0, column = 1, sticky = tk.W)
+
+button1 = ttk.Button(tab1, text='OK', command = getMat)
+button1.grid(row=0, column=2, sticky=tk.W)
 
 label2 = ttk.Label(tab1, text = "Entrez l'imprecision epsilon souhaitee:")
-label2.pack()
+label2.grid(row=1, column=0, sticky=tk.W)
 
 imprecision_val = tk.StringVar() 
 imprecision = ttk.Entry(tab1, textvariable = imprecision_val)
-imprecision.pack()
+imprecision.grid(row=1, column=1, sticky=tk.W)
 
-button1 = ttk.Button(tab1, text = 'Confirmer', command = firstFunc)
-button1.pack()
+button2 = ttk.Button(tab1, text='OK', command = getEps)
+button2.grid(row=1, column=2, sticky=tk.W)
+
+label3 = ttk.Label(tab1, text = "Entrez le nombre de points souhaite:")
+label3.grid(row=2, column=0, sticky=tk.W)
+
+nbPoints_val = tk.IntVar() 
+nbPoints = ttk.Entry(tab1, textvariable = nbPoints_val)
+nbPoints.grid(row=2, column=1, sticky=tk.W)
+
+button3 = ttk.Button(tab1, text='OK', command = getNbPoints)
+button3.grid(row=2, column=2, sticky=tk.W)
+
+button4 = ttk.Button(tab1, text='Afficher', command = Affichage)
+button4.grid(row=3, column=1, sticky=tk.W)
 
 canvas = FigureCanvasTkAgg(fig, tab1)
-canvas.get_tk_widget().pack()
+canvas.get_tk_widget().grid(row = 4, column = 1)
 
 toolbar = NavigationToolbar2Tk(canvas, tab1, pack_toolbar = False)
 toolbar.update()
-toolbar.pack()
+toolbar.grid(row = 5, column = 1)
 
 # arguments - deuxieme approche (fenetre 2)
 tab2 = ttk.Frame(notebook)
