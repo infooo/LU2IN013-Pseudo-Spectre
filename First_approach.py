@@ -12,7 +12,7 @@ def Pseudo(x, y, A, n):
 
 def affichage(n, A, epsilon, nbPoints):
 
-    R = [2*math.sqrt(n)*epsilon + np.sum(np.abs(A[i, :])) for i in range(n)]
+    R = [math.sqrt(n)*epsilon + np.sum(np.abs(A[i, :])) for i in range(n)]
     centres = np.diag(A)
 
     x = np.array([])
@@ -35,6 +35,8 @@ def affichage(n, A, epsilon, nbPoints):
                 if (i, j) not in seen:
                     Z[j, i] = Pseudo(X[j, i], Y[j, i], A, n)
                     seen.add((i,j))
+                else:
+                    Z[j,i] = 1000
 
         C = epsilon
         plt.contour(X, Y, Z, levels=[C, 10*C], colors=['blue', 'red'])
@@ -42,4 +44,3 @@ def affichage(n, A, epsilon, nbPoints):
         plt.ylabel('Imaginaires')
         plt.title('Contours du pseudo-spectre')
         plt.grid(True)
-
