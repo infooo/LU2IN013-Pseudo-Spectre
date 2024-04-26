@@ -41,7 +41,7 @@ fig, ax = plt.subplots()
 
 # attributs de la fenetre 
 window.title('Projet LU2IN013')
-window.geometry('1600x900')
+window.geometry('1280x960')
 window.resizable(height = False, width = False)
 
 # menu & notebook
