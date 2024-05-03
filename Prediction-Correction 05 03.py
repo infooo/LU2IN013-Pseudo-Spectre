@@ -1,11 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import GRID
 
 Z = np.array([], dtype=np.float64)
 def creerMat(n):
     A = np.random.rand(n, n)*10-5
     return A
+
+A = creerMat(5)
+#A = np.identity(5)
 
 def g(z, A, n):
     U, S, V = np.linalg.svd(np.identity(n)*z-A)
@@ -19,40 +23,53 @@ def h(z, theta, A, n, epsilon):
 def PredCorr(A, n, epsilon, tolContour, pas):
     global Z
     #trouver le premier point z1 par la methode de Newton
-    lambda0 = np.linalg.eig(A)[0][0]
-    theta = epsilon
-    d = 1j
-    z = lambda0 + d*theta
-    U, S, V = g(z, A, n)
-    while(np.abs((S[n-1] - epsilon)) / epsilon > 0.001):
-        z = z - (S[n-1] - epsilon)*d / ((-d*np.vdot(V[n-1], U[n-1])).real)
+    for j in range(n):
+        lambda0 = np.linalg.eig(A)[0][j]
+        plt.plot(lambda0.real, lambda0.imag, 'xr')
+        theta = epsilon
+        d = 1j
+        z = lambda0 + d*theta
         U, S, V = g(z, A, n)
-        #newton iterate 
-    Z = np.append(Z, z)
-    
-    #on trouve le point suivant
-    rk = d*(np.vdot(V[n-1], U[n-1]) / np.abs(np.vdot(V[n-1], U[n-1])))
-    zkPred = z + pas*rk
-    Uk, Sk, Vk = g(zkPred, A, n)
-    zk = zkPred - (Sk[n-1] - epsilon)/(np.vdot(Uk[n-1], Vk[n-1]))
-    
-    #puis tous les points suivants tant que l'on est pas revenu a z1
-    while(np.abs((zk - z)) > tolContour):
-        Z = np.append(Z, zk)
-        rk = d*(np.vdot(Vk[n-1], Uk[n-1]) / np.abs(np.vdot(Vk[n-1], Uk[n-1])))
-        zkPred = zk + pas*rk
+        print(np.abs((S[n-1] - epsilon)))
+        while(np.abs((S[n-1] - epsilon))  >  epsilon * 0.00001):
+            print((S[n-1] - epsilon)/epsilon)
+            print("PREMIER POINT")
+            #print(V, U, S[n-1])
+            z = z - (S[n-1] - epsilon)*d / ((-d*np.vdot(V[:, n-1], U[:, n-1])).real)
+            U, S, V = g(z, A, n)
+            Z = np.append(Z,  z)
+            #newton iterate 
+        Z = np.append(Z, z)
+        #GRID.affichage(5, A, epsilon, 200)
+        
+        #on trouve le point suivant
+        rk = d*(np.vdot(V[:,n-1], U[:,n-1]) / np.abs(np.vdot(V[:,n-1], U[:,n-1])))
+        zkPred = z + pas*rk
         Uk, Sk, Vk = g(zkPred, A, n)
-        zk = zkPred - (Sk[n-1] - epsilon) /(np.vdot(Uk[n-1], Vk[n-1]))
+        zk = zkPred - (Sk[n-1] - epsilon)/(np.vdot(Uk[:,n-1], Vk[:,n-1]))
+        Z = np.append(Z, zk)
+        
+        i = 0
+        #puis tous les points suivants tant que l'on est pas revenu a z1
+        while(np.abs((zk - z)) > tolContour):
+            print(np.abs((zk - z)))
+            rk = d*(np.vdot(Vk[:,n-1], Uk[:,n-1]) / np.abs(np.vdot(Vk[:,n-1], Uk[:,n-1])))
+            zkPred = zk + pas*rk
+            Uk, Sk, Vk = g(zkPred, A, n)
+            zk = zkPred - (Sk[n-1] - epsilon) / (np.vdot(Uk[:,n-1], Vk[:,n-1]))
+            i += 1 
+            Z = np.append(Z, zk)
+        print("FIN C FINI")
 
-PredCorr(creerMat(10) , 10, 0.1, 0.1, 0.1)
+PredCorr(A , 5, 0.001, 0.001, 0.1)
 
-C = 0.1
-X = [z.real for z in Z]
-Y = [z.imag for z in Z]
-#plt.contour(X, Y, 1, levels = [1])
-plt.plot(Z)
-plt.xlabel('Reels')
-plt.ylabel('Imaginaires')
-plt.title('Contour du pseudo-spectre')
+Z_real = [z.real for z in Z]
+Z_imag = [z.imag for z in Z]
+
+# Plot real vs imaginary parts
+plt.plot(Z_real, Z_imag, 'bo')  # 'bo' for blue circles
+plt.xlabel('Real')
+plt.ylabel('Imaginary')
+plt.title('Complex numbers in Z')
 plt.grid(True)
 plt.show()
