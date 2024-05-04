@@ -8,8 +8,6 @@ def creerMat(n):
     A = np.random.rand(n, n)*10-5
     return A
 
-A = creerMat(5)
-#A = np.identity(5)
 
 def g(z, A, n):
     U, S, V = np.linalg.svd(np.identity(n)*z-A)
@@ -32,7 +30,7 @@ def PredCorr(A, n, epsilon, tolContour, pas):
         U, S, V = g(z, A, n)
         print(np.abs((S[n-1] - epsilon)))
         while(np.abs((S[n-1] - epsilon))  >  epsilon * 0.00001):
-            print((S[n-1] - epsilon)/epsilon)
+            #print((S[n-1] - epsilon)/epsilon)
             print("PREMIER POINT")
             #print(V, U, S[n-1])
             z = z - (S[n-1] - epsilon)*d / ((-d*np.vdot(V[:, n-1], U[:, n-1])).real)
@@ -52,7 +50,7 @@ def PredCorr(A, n, epsilon, tolContour, pas):
         i = 0
         #puis tous les points suivants tant que l'on est pas revenu a z1
         while(np.abs((zk - z)) > tolContour):
-            print(np.abs((zk - z)))
+            #print(np.abs((zk - z)))
             rk = d*(np.vdot(Vk[:,n-1], Uk[:,n-1]) / np.abs(np.vdot(Vk[:,n-1], Uk[:,n-1])))
             zkPred = zk + pas*rk
             Uk, Sk, Vk = g(zkPred, A, n)
@@ -61,13 +59,14 @@ def PredCorr(A, n, epsilon, tolContour, pas):
             Z = np.append(Z, zk)
         print("FIN C FINI")
 
-PredCorr(A , 5, 0.001, 0.001, 0.1)
-
+A = creerMat(50)
+PredCorr(A , 50, 0.01, 0.0001, 0.005)
+#GRID.affichage(20, A, 0.1, 500)
 Z_real = [z.real for z in Z]
 Z_imag = [z.imag for z in Z]
 
 # Plot real vs imaginary parts
-plt.plot(Z_real, Z_imag, 'bo')  # 'bo' for blue circles
+plt.plot(Z_real, Z_imag, 'b.')  # 'bo' for blue circles
 plt.xlabel('Real')
 plt.ylabel('Imaginary')
 plt.title('Complex numbers in Z')

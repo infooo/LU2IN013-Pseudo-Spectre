@@ -39,7 +39,7 @@ def affichage(n, A, epsilon, nbPoints):
                     Z[j, i] = 1000
 
         C = epsilon
-        plt.contour(X, Y, Z, levels=[C], colors=['blue'])
+        plt.contour(X, Y, Z, levels=[C], colors=['red'])
         plt.xlabel('Reels')
         plt.ylabel('Imaginaires')
         plt.title('Contour du pseudo-spectre')
