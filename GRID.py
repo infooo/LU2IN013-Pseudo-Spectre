@@ -10,7 +10,7 @@ def svmin(x, y, A, n):
     S = np.linalg.svd(np.identity(n)*(x + 1j*y) - A, compute_uv=False)
     return S[n-1]
 
-def affichage(n, A, epsilon, nbPoints):
+def affichage(ax, n, A, epsilon, nbPoints):
 
     R = [math.sqrt(n)*epsilon + np.sum(np.abs(A[i, :])) for i in range(n)]
     centers = np.diag(A)
@@ -39,9 +39,9 @@ def affichage(n, A, epsilon, nbPoints):
                     Z[j, i] = 1000
 
         C = epsilon
-        plt.contour(X, Y, Z, levels=[C], colors=['red'])
-        plt.xlabel('Reels')
-        plt.ylabel('Imaginaires')
-        plt.title('Contour du pseudo-spectre')
-        plt.grid(True)
+        ax.contour(X, Y, Z, levels=[C], colors=['red'])
+        ax.set_xlabel('Reels')
+        ax.set_ylabel('Imaginaires')
+        ax.set_title('Contour du pseudo-spectre')
+        ax.grid(True)
 
