@@ -3,6 +3,7 @@ import ttkbootstrap as ttk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import GRID 
+import PredictionCorrection
 
 # fonctions utilisees tout au long du code pour le GUI
 def getMat():
@@ -28,16 +29,22 @@ def getPas():
     pas = float(pas_val.get())
 
 def GridMethod():
-    ax.clear()
-    GRID.affichage(n, A, epsilon, nbPoints)
-    canvas.draw()
+    ax1.clear()
+    GRID.affichage(ax1, n, A, epsilon, nbPoints)
+    canvas1.draw()
+
+def PredCorrMethod():
+    ax2.clear()
+    PredictionCorrection.PredCorr(ax2, A, n, epsilon, tolContour, pas)
+    canvas2.draw()
 
 def quitApp():
     window.quit()
 
 # fenetre
 window = ttk.Window(themename = 'darkly')
-fig, ax = plt.subplots()
+fig1, ax1 = plt.subplots()
+fig2, ax2 = plt.subplots()
 
 # attributs de la fenetre 
 window.title('Projet LU2IN013')
@@ -73,6 +80,7 @@ tab0 = ttk.Frame(notebook)
 
 label00 = ttk.Label(tab0, text = "Entrez les valeurs que vous souhaitez en veillant à cliquer (re-cliquer) sur OK après l'insertion (la modification).", font = ("Arial", 12))
 label00.grid(row = 0, column = 0, sticky = tk.W)
+nb_width = label00.winfo_reqwidth()
 
 label01 = ttk.Label(tab0, text = 'Entrez la taille souhaitée de la matrice:', font = ("Arial", 12))
 label01.grid(row = 1, column = 0, sticky = tk.W)
@@ -138,18 +146,27 @@ button05.grid(row = 5, column = 0, sticky = tk.W, padx = (label05_width + pas_wi
 tab1 = ttk.Frame(notebook)
 
 button11 = ttk.Button(tab1, text = 'Afficher', command = GridMethod)
-button11.grid(row = 0, column = 0, sticky = tk.N, padx = (100, 0))
+button11.grid(row = 0, column = 0, sticky = tk.W, padx = nb_width)
 
-canvas = FigureCanvasTkAgg(fig, tab1)
-canvas.get_tk_widget().grid(row = 1, column = 0, padx = (75, 0))
+canvas1 = FigureCanvasTkAgg(fig1, tab1)
+canvas1.get_tk_widget().grid(row = 1, column = 0)
 
-toolbar = NavigationToolbar2Tk(canvas, tab1, pack_toolbar = False)
-toolbar.update()
-toolbar.grid(row = 2, column = 0, padx = (75, 0))
+toolbar1 = NavigationToolbar2Tk(canvas1, tab1, pack_toolbar = False)
+toolbar1.update()
+toolbar1.grid(row = 2, column = 0)
 
 # arguments - deuxieme approche (fenetre 2)
 tab2 = ttk.Frame(notebook)
 
+button21 = ttk.Button(tab2, text = 'Afficher', command = PredCorrMethod)
+button21.grid(row = 0, column = 0, sticky = tk.W, padx = nb_width)
+
+canvas2 = FigureCanvasTkAgg(fig2, tab2)
+canvas2.get_tk_widget().grid(row = 1, column = 0)
+
+toolbar2 = NavigationToolbar2Tk(canvas2, tab2, pack_toolbar = False)
+toolbar2.update()
+toolbar2.grid(row = 2, column = 0)
 
 # menu & notebook - ajouts des differentes fenetres 
 window.configure(menu = menu)
