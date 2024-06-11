@@ -49,7 +49,7 @@ def CrissCrossAbscisse(A, n, epsilon, nbPoints, tol):
     Y = np.append(Y, zk.imag)
 
     #etape 3: intersections verticales basses
-    for i in range(2*n):
+    for _ in range(2*n):
         rechercheVerticale = np.linspace(zk.imag - 1, zk.imag, nbPoints)
         for y in rechercheVerticale:
             if estValeurSinguliereVerticale(A, n, zk.real, y, epsilon, tol):
@@ -60,7 +60,7 @@ def CrissCrossAbscisse(A, n, epsilon, nbPoints, tol):
     zk = z1
 
     #etape 3: intersections verticales hautes
-    for i in range(2*n):
+    for _ in range(2*n):
         rechercheVerticale = np.linspace(zk.imag, zk.imag + 1, nbPoints)
         for y in rechercheVerticale:
             if estValeurSinguliereVerticale(A, n, zk.real, y, epsilon, tol):
