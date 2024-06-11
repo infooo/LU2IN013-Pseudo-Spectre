@@ -14,14 +14,14 @@ def rightmostVap(A):
     rmVap = max(vaps, key = lambda x: x.real)
     return rmVap 
 
-def estValeurSinguliereHorizontale(A, n, x, y, epsilon, tol):
+def estValeurSinguliereHorizontale(A, n, y, epsilon, tol):
     matAugmentee = np.block([
         [-y * np.identity(n) - A.conjugate().T, -epsilon * np.identity(n)],
         [epsilon * np.identity(n), 1j*A + y * np.identity(n)]
     ])
     vaps = np.linalg.eig(matAugmentee)[0]
     for vap in vaps:
-        if np.abs(vap - 1j*x) < tol:
+        if np.abs(vap) < tol:
             return True
     return False
 
@@ -41,6 +41,7 @@ def CrissCrossAbscisse(A, n, epsilon, nbPoints, tol):
 
     #etape 2
     rechercheHorizontale = np.linspace(z1.real, z1.real + 1, nbPoints)
+
     for x in rechercheHorizontale:
         if estValeurSinguliereHorizontale(A, n, x, z1.imag, epsilon, tol):
             z1 = x + 1j*z1.imag
@@ -67,3 +68,8 @@ def CrissCrossAbscisse(A, n, epsilon, nbPoints, tol):
                 if np.abs(svmin(A, n, zk.real, y) - epsilon) < tol:
                     Y = np.append(Y, y)
                     zk = zk.real + 1j*y
+
+    l = len(Y)
+
+    for i in range (l):
+        
