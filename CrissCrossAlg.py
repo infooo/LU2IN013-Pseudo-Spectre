@@ -40,7 +40,7 @@ def CrissCrossAbscisse(A, n, epsilon, nbPoints, tol):
     z1 = rightmostVap(A)
 
     #etape 2
-    rechercheHorizontale = np.linspace(z1.real - 1, z1.real + 1, nbPoints)
+    rechercheHorizontale = np.linspace(z1.real, z1.real + 1, nbPoints)
     for x in rechercheHorizontale:
         if estValeurSinguliereHorizontale(A, n, x, z1.imag, epsilon, tol):
             z1 = x + 1j*z1.imag
