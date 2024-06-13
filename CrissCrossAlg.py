@@ -1,9 +1,13 @@
 import numpy as np
+import PredictionCorrection
 import matplotlib.pyplot as plt
 import math
 
 #Algo Criss-Cross pour l'abscisse du pseudospectre (sup Re z, z dans le pseudospectre)
-Y = np.array([], dtype=np.float64)
+
+def creerMat(n):
+    A = np.random.rand(n, n)*10-5
+    return A
 
 def svmin(A, n, x, y):
     S = np.linalg.svd(np.identity(n)*(x + 1j*y) - A, compute_uv=False)
@@ -14,62 +18,78 @@ def rightmostVap(A):
     rmVap = max(vaps, key = lambda x: x.real)
     return rmVap 
 
-def estValeurSinguliereHorizontale(A, n, y, epsilon, tol):
+def ValeurSinguliereHorizontale(A, n, y, epsilon, tol):
     matAugmentee = np.block([
-        [-y * np.identity(n) - A.conjugate().T, -epsilon * np.identity(n)],
+        [-y * np.identity(n) + 1j*A.conjugate().T, -epsilon * np.identity(n)],
         [epsilon * np.identity(n), 1j*A + y * np.identity(n)]
     ])
     vaps = np.linalg.eig(matAugmentee)[0]
-    for vap in vaps:
-        if np.abs(vap) < tol:
-            return True
-    return False
+    maxvap = max([x.imag for x in vaps if np.abs(x.real) < tol])
+    print(maxvap)
+    return maxvap
 
-def estValeurSinguliereVerticale(A, n, x, y, epsilon, tol):
+def ValeurSinguliereVerticale(A, n, x, epsilon, tol):
+    Y = np.array([], dtype=np.float64)
     matAugmentee = np.block([
         [x * np.identity(n) - A.conjugate().T, -epsilon * np.identity(n)],
         [epsilon * np.identity(n), A - x * np.identity(n)]
     ])
     vaps = np.linalg.eig(matAugmentee)[0]
     for vap in vaps:
-        if np.abs(vap - 1j*y) < tol:
-            return True
-    return False
+        if np.abs(vap.real) < tol:
+            if np.abs(svmin(A, n, x, vap.imag) - epsilon) < tol:
+                Y = np.append(Y, vap.imag)
+    return Y
 
-def CrissCrossAbscisse(A, n, epsilon, nbPoints, tol):
+
+def CrissCrossAbscisse(A, n, epsilon, tol):
     z1 = rightmostVap(A)
-
+    print(z1)
     #etape 2
-    rechercheHorizontale = np.linspace(z1.real, z1.real + 1, nbPoints)
+    x = z1.imag
+    i = 0 
+    midpoints = np.array([x], dtype=np.float64)
+    X = np.array([], dtype=np.float64)
+    Y = np.array([z1.imag], dtype=np.float64)
 
-    for x in rechercheHorizontale:
-        if estValeurSinguliereHorizontale(A, n, x, z1.imag, epsilon, tol):
-            z1 = x + 1j*z1.imag
-    zk = z1
+    while i < 100: 
+        X = np.array([], dtype=np.float64)
+        for x in midpoints:
+            X = np.append(X, ValeurSinguliereHorizontale(A, n, x, epsilon, tol))
+        
+        nvx = X[0]
+        nvy = Y[0]
+        for j in range(len(X)):
+            if X[j] > nvx:
+                nvx = X[j]
+                nvy = Y[j]
 
-    Y = np.append(Y, zk.imag)
+        z1 = nvx + 1j*nvy.imag
+        zk = z1
+        
+        Y = np.array([zk.imag], dtype=np.float64)
 
-    #etape 3: intersections verticales basses
-    for _ in range(2*n):
-        rechercheVerticale = np.linspace(zk.imag - 1, zk.imag, nbPoints)
-        for y in rechercheVerticale:
-            if estValeurSinguliereVerticale(A, n, zk.real, y, epsilon, tol):
-                if np.abs(svmin(A, n, zk.real, y) - epsilon) < tol:
-                    Y = np.insert(Y, 0, y)
-                    zk = zk.real + 1j*y
+        #etape 3: intersections verticales basses
+        
+        Y = np.append([] , ValeurSinguliereVerticale(A, n, zk.real, epsilon, tol))
+        Y.sort()
+        zk = z1
 
-    zk = z1
+        l = len(Y)
+        midpoints = np.array([], dtype = np.float64)
+        k = 0
+        while(2*k+1 < l):
+            midpoints = np.append(midpoints, (Y[2*k] + Y[2*k + 1]) / 2)
+            k+=1
+        i += 1
+        if (l == 1):
+            return nvx
+    return X[0]
+            
+A = creerMat(10)
+fig, ax = plt.subplots()
+print(CrissCrossAbscisse(A, 10, 0.01, 0.0005))
 
-    #etape 3: intersections verticales hautes
-    for _ in range(2*n):
-        rechercheVerticale = np.linspace(zk.imag, zk.imag + 1, nbPoints)
-        for y in rechercheVerticale:
-            if estValeurSinguliereVerticale(A, n, zk.real, y, epsilon, tol):
-                if np.abs(svmin(A, n, zk.real, y) - epsilon) < tol:
-                    Y = np.append(Y, y)
-                    zk = zk.real + 1j*y
+PredictionCorrection.PredCorr(ax, A, 10, 0.01, 0.0001, 0.005)
 
-    l = len(Y)
-
-    for i in range (l):
         

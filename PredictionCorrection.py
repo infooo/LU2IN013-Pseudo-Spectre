@@ -55,7 +55,7 @@ def PredCorr(ax, A, n, epsilon, tolContour, pas):
     ax.set_ylabel('Imaginaires')
     ax.set_title('Contour du pseudo-spectre')
     ax.grid(True)
-    ax.show()
+    plt.show()
 
 #A = creerMat(10)
 #PredCorr(A , 10, 0.01, 0.0001, 0.005)
