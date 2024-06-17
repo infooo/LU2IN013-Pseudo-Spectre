@@ -67,7 +67,6 @@ def CrissCrossAbscisse(A, n, epsilon, tol):
         z1 = nvx + 1j*nvy.imag
         zk = z1
         
-        Y = np.array([zk.imag], dtype=np.float64)
 
         #etape 3: intersections verticales basses
         
