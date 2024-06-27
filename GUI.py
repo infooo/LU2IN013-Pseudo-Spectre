@@ -48,8 +48,15 @@ def PseudoSpectreAbscisse():
 def ComposantesMethod():
     ax3.clear()
     Composantes.affichage(ax3, n, A, epsilon, nbPoints)
-    Composantes.affichage(ax3, n, A, epsilon / (3+math.sqrt(2))*n, nbPoints)
+    Composantes.affichage(ax3, n, A, epsilon / ((3+math.sqrt(2))*n), nbPoints)
     canvas3.draw()
+
+def ComparePS():
+    ax4.clear()
+    GRID.affichage(ax4, n, A, epsilon, nbPoints)
+    Composantes.affichage(ax4, n, A, epsilon, nbPoints)
+    Composantes.affichage(ax4, n, A, epsilon / ((3+math.sqrt(2))*n), nbPoints)
+    canvas4.draw()
 
 def quitApp():
     window.quit()
@@ -59,6 +66,7 @@ window = ttk.Window(themename = 'darkly')
 fig1, ax1 = plt.subplots()
 fig2, ax2 = plt.subplots()
 fig3, ax3 = plt.subplots()
+fig4, ax4 = plt.subplots()
 
 # attributs de la fenetre 
 window.title('Projet LU2IN013')
@@ -202,6 +210,19 @@ toolbar3 = NavigationToolbar2Tk(canvas3, tab3, pack_toolbar = False)
 toolbar3.update()
 toolbar3.grid(row = 2, column = 0)
 
+# arguments - comparaison du pseudospectre et du pseudospectre par composantes (fenetre 4)
+tab4 = ttk.Frame(notebook)
+
+button41 = ttk.Button(tab4, text='Afficher', command=ComparePS)
+button41.grid(row = 0, column = 0, sticky = tk.W, padx = nb_width)
+
+canvas4 = FigureCanvasTkAgg(fig4, tab4)
+canvas4.get_tk_widget().grid(row = 1, column = 0)
+
+toolbar4 = NavigationToolbar2Tk(canvas4, tab4, pack_toolbar = False)
+toolbar4.update()
+toolbar4.grid(row = 2, column = 0)
+
 # menu & notebook - ajouts des differentes fenetres 
 window.configure(menu = menu)
 
@@ -209,6 +230,7 @@ notebook.add(tab0, text = 'Valeurs')
 notebook.add(tab1, text = 'GRID')
 notebook.add(tab2, text = 'Prédiction-correction')
 notebook.add(tab3, text = 'Pseudo-spectre par composantes')
+notebook.add(tab4, text = 'Comparaison pseudo-spectre et pseudo-spectre par composantes')
 notebook.pack(pady = 15)
 
 # run
