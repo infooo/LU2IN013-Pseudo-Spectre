@@ -40,8 +40,8 @@ def affichage(ax, n, A, epsilon, nbPoints):
 
         C = epsilon
         ax.contour(X, Y, Z, levels=[C], colors=['red'])
-        #ax.set_xlabel('Reels')
-        #ax.set_ylabel('Imaginaires')
-        #ax.set_title('Contour du pseudo-spectre')
+        ax.set_xlabel('Reels')
+        ax.set_ylabel('Imaginaires')
+        ax.set_title('Contour du pseudo-spectre')
         ax.grid(True)
 

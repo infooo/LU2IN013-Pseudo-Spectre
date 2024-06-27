@@ -16,7 +16,7 @@ def f(x, y, A, n, E):
     r = rayspec(Y)
     return r
 
-def affichage(n, A, epsilon, nbPoints):
+def affichage(ax, n, A, epsilon, nbPoints):
 
     R = [math.sqrt(n)*epsilon + np.sum(np.abs(A[i, :])) for i in range(n)]
     centers = np.diag(A)
@@ -46,11 +46,8 @@ def affichage(n, A, epsilon, nbPoints):
                
 
         C = 1/epsilon
-        plt.contour(X, Y, Z, levels=[C], colors=['blue'])
-        plt.grid(True)
-
-A = creerMat(10)
-g.affichage(plt,10, A, 0.5, 50)
-affichage(10, creerMat(10), 0.5, 50)
-affichage(10, A, 0.5/( (3+2*math.sqrt(2))*10), 50)
-plt.show()
+        ax.contour(X, Y, Z, levels=[C], colors=['green'])
+        ax.set_xlabel('Reels')
+        ax.set_ylabel('Imaginaires')
+        ax.set_title('Contour du pseudo-spectre par composantes')
+        ax.grid(True)

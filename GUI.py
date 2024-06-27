@@ -1,9 +1,12 @@
 import tkinter as tk
 import ttkbootstrap as ttk
+import math
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import GRID 
 import PredictionCorrection
+import CrissCrossAlg
+import Composantes
 
 # fonctions utilisees tout au long du code pour le GUI
 def getMat():
@@ -35,8 +38,18 @@ def GridMethod():
 
 def PredCorrMethod():
     ax2.clear()
-    PredictionCorrection.PredCorr(ax2, A, n, epsilon, tolContour, pas)
+    PredictionCorrection.PredCorr(ax2, n, A, epsilon, tolContour, pas)
     canvas2.draw()
+
+def PseudoSpectreAbscisse():
+    abscisse = CrissCrossAlg.CrissCrossAbscisse(n, A, epsilon, 0.00001)
+    psabscisse.config(text=f"L'abscisse du pseudospectre est: {abscisse}")
+
+def ComposantesMethod():
+    ax3.clear()
+    Composantes.affichage(ax3, n, A, epsilon, nbPoints)
+    Composantes.affichage(ax3, n, A, epsilon / (3+math.sqrt(2))*n, nbPoints)
+    canvas3.draw()
 
 def quitApp():
     window.quit()
@@ -45,6 +58,7 @@ def quitApp():
 window = ttk.Window(themename = 'darkly')
 fig1, ax1 = plt.subplots()
 fig2, ax2 = plt.subplots()
+fig3, ax3 = plt.subplots()
 
 # attributs de la fenetre 
 window.title('Projet LU2IN013')
@@ -75,7 +89,7 @@ title_label.pack()
 pres_label = ttk.Label(window, text = "Ci-dessous vous sont mises à disposition les différentes méthodes que l'on utilise afin d'étudier le pseudo-spectre, accompagnées d'une interface graphique permettant de visualiser nos approches.", font = ("Arial", 12))
 pres_label.pack()
 
-# arguments - deuxieme approche (fenetre 0)
+# arguments - Valeurs (fenetre 0)
 tab0 = ttk.Frame(notebook)
 
 label00 = ttk.Label(tab0, text = "Entrez les valeurs que vous souhaitez en veillant à cliquer (re-cliquer) sur OK après l'insertion (la modification).", font = ("Arial", 12))
@@ -142,7 +156,14 @@ pas_width = pas.winfo_reqwidth()
 button05 = ttk.Button(tab0, text = 'OK', command = getPas)
 button05.grid(row = 5, column = 0, sticky = tk.W, padx = (label05_width + pas_width, 0))
 
-# arguments - premiere approche (fenetre 1)
+button06 = ttk.Button(tab0, text="Afficher l'abscisse du pseudospectre", command=PseudoSpectreAbscisse)
+button06.grid(row=6, column=0, sticky=tk.W)
+b06_width = button06.winfo_reqwidth()
+
+psabscisse = ttk.Label(tab0, text="")
+psabscisse.grid(row=6, column=0, sticky=tk.W, padx=(b06_width, 0))
+
+# arguments - GRID (fenetre 1)
 tab1 = ttk.Frame(notebook)
 
 button11 = ttk.Button(tab1, text = 'Afficher', command = GridMethod)
@@ -155,7 +176,7 @@ toolbar1 = NavigationToolbar2Tk(canvas1, tab1, pack_toolbar = False)
 toolbar1.update()
 toolbar1.grid(row = 2, column = 0)
 
-# arguments - deuxieme approche (fenetre 2)
+# arguments - PredCorr (fenetre 2)
 tab2 = ttk.Frame(notebook)
 
 button21 = ttk.Button(tab2, text = 'Afficher', command = PredCorrMethod)
@@ -168,12 +189,26 @@ toolbar2 = NavigationToolbar2Tk(canvas2, tab2, pack_toolbar = False)
 toolbar2.update()
 toolbar2.grid(row = 2, column = 0)
 
+# arguments - Pseudospectre par composante (fenetre 3)
+tab3 = ttk.Frame(notebook)
+
+button31 = ttk.Button(tab3, text = 'Afficher', command = ComposantesMethod)
+button31.grid(row = 0, column = 0, sticky = tk.W, padx = nb_width)
+
+canvas3 = FigureCanvasTkAgg(fig3, tab3)
+canvas3.get_tk_widget().grid(row = 1, column = 0)
+
+toolbar3 = NavigationToolbar2Tk(canvas3, tab3, pack_toolbar = False)
+toolbar3.update()
+toolbar3.grid(row = 2, column = 0)
+
 # menu & notebook - ajouts des differentes fenetres 
 window.configure(menu = menu)
 
 notebook.add(tab0, text = 'Valeurs')
 notebook.add(tab1, text = 'GRID')
 notebook.add(tab2, text = 'Prédiction-correction')
+notebook.add(tab3, text = 'Pseudo-spectre par composantes')
 notebook.pack(pady = 15)
 
 # run

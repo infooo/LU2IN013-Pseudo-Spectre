@@ -25,7 +25,6 @@ def ValeurSinguliereHorizontale(A, n, y, epsilon, tol):
     ])
     vaps = np.linalg.eig(matAugmentee)[0]
     maxvap = max([x.imag for x in vaps if np.abs(x.real) < tol])
-    print(maxvap)
     return maxvap
 
 def ValeurSinguliereVerticale(A, n, x, epsilon, tol):
@@ -42,9 +41,8 @@ def ValeurSinguliereVerticale(A, n, x, epsilon, tol):
     return Y
 
 
-def CrissCrossAbscisse(A, n, epsilon, tol):
+def CrissCrossAbscisse(n, A, epsilon, tol):
     z1 = rightmostVap(A)
-    print(z1)
     #etape 2
     x = z1.imag
     i = 0 
@@ -52,7 +50,7 @@ def CrissCrossAbscisse(A, n, epsilon, tol):
     X = np.array([], dtype=np.float64)
     Y = np.array([z1.imag], dtype=np.float64)
 
-    while i < 100: 
+    while i < 10: 
         X = np.array([], dtype=np.float64)
         for x in midpoints:
             X = np.append(X, ValeurSinguliereHorizontale(A, n, x, epsilon, tol))
@@ -66,7 +64,6 @@ def CrissCrossAbscisse(A, n, epsilon, tol):
 
         z1 = nvx + 1j*nvy.imag
         zk = z1
-        
 
         #etape 3: intersections verticales basses
         
@@ -85,10 +82,3 @@ def CrissCrossAbscisse(A, n, epsilon, tol):
             return nvx
     return X[0]
             
-A = creerMat(10)
-fig, ax = plt.subplots()
-print(CrissCrossAbscisse(A, 10, 0.01, 0.0005))
-
-PredictionCorrection.PredCorr(ax, A, 10, 0.01, 0.0001, 0.005)
-
-        

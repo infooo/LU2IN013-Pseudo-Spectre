@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-Z = np.array([], dtype=np.float64)
+#recommandation: n = 10, eps = 0.1, tolerance = 0.001, pas = 0.05
+
 def creerMat(n):
     A = np.random.rand(n, n)*10-5
     return A
@@ -14,17 +15,16 @@ def g(z, A, n):
 def h(z, theta, A, n, epsilon):
     return g(z + 1j*theta, A, n)[1][n-1] - epsilon
 
-def PredCorr(ax, A, n, epsilon, tolContour, pas):
-    global Z
+def PredCorr(ax, n, A, epsilon, tolContour, pas):
+    Z = np.array([], dtype=np.float64)
     #trouver le premier point z1 par la methode de Newton
     for j in range(n):
         lambda0 = np.linalg.eig(A)[0][j]
-        plt.plot(lambda0.real, lambda0.imag, 'xr')
+        ax.plot(lambda0.real, lambda0.imag, 'xr')
         theta = epsilon
         d = 1j
         z = lambda0 + d*theta
         U, S, V = g(z, A, n)
-        print(np.abs((S[n-1] - epsilon)))
         while(np.abs((S[n-1] - epsilon))  >  epsilon * 0.00001):
             z = z - (S[n-1] - epsilon)*d / ((-d*np.vdot(V[:, n-1], U[:, n-1])).real)
             U, S, V = g(z, A, n)
@@ -55,18 +55,5 @@ def PredCorr(ax, A, n, epsilon, tolContour, pas):
     ax.set_ylabel('Imaginaires')
     ax.set_title('Contour du pseudo-spectre')
     ax.grid(True)
-    plt.show()
 
-#A = creerMat(10)
-#PredCorr(A , 10, 0.01, 0.0001, 0.005)
 
-#Z_real = [z.real for z in Z]
-#Z_imag = [z.imag for z in Z]
-
-# Plot real vs imaginary parts
-#plt.plot(Z_real, Z_imag, 'b.')  # 'bo' for blue circles
-#plt.xlabel('Real')
-#plt.ylabel('Imaginary')
-#plt.title('Complex numbers in Z')
-#plt.grid(True)
-#plt.show()
